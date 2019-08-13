@@ -1,0 +1,10 @@
+---
+kind: pipeline
+name: Lint
+
+steps:
+    - name: Lint
+      image: python:3.7
+      commands:
+          - pip install -r requirements-dev.txt
+          - make lint
