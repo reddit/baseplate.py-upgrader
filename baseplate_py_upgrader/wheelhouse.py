@@ -99,7 +99,7 @@ class Wheelhouse:
 
     def get_available_versions(self, distribution_name: str) -> List[str]:
         try:
-            return self.by_distribution[distribution_name.replace("-", "_")]
+            return self.by_distribution[distribution_name.lower().replace("-", "_")]
         except KeyError:
             raise WheelhouseError(
                 f"Can't find any wheels for {repr(distribution_name)}"

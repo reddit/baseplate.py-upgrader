@@ -37,7 +37,7 @@ class RequirementsFile:
         for line in self.lines:
             m = REQUIREMENT_RE.match(line)
             if m:
-                if m["distribution"] == distribution_name:
+                if m["distribution"].lower() == distribution_name.lower():
                     return m["version"]
         raise KeyError(f"{distribution_name} not found")
 
@@ -45,7 +45,7 @@ class RequirementsFile:
         for i, line in enumerate(self.lines):
             m = REQUIREMENT_RE.match(line)
             if m:
-                if m["distribution"] == distribution_name:
+                if m["distribution"].lower() == distribution_name.lower():
                     self.lines[i] = f"{distribution_name}=={version}"
                     return
         self.lines.append(f"{distribution_name}=={version}")
