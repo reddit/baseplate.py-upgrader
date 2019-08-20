@@ -110,6 +110,9 @@ class Wheelhouse:
     ) -> str:
         versions = self.get_available_versions(distribution_name)
 
+        if not prefix or "dev" not in prefix:
+            versions = [v for v in versions if "dev" not in v]
+
         if prefix:
             return str(
                 max((v for v in versions if v.startswith(prefix)), key=Version.from_str)
