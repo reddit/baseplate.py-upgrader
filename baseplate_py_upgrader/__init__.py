@@ -63,7 +63,7 @@ def get_target_series(current_version: str) -> str:
     for prefix, target in UPGRADES.items():
         if current_version.startswith(prefix):
             return target
-    raise Exception(f"Can't upgrade from {repr(current_version)}!")
+    raise Exception(f"No major upgrades available from {repr(current_version)}!")
 
 
 def _main() -> int:

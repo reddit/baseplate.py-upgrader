@@ -13,5 +13,6 @@ class FixMakeContextObject(BaseplateBaseFix):
     def transform(self, node: LN, capture: Capture) -> None:
         self.warn(
             node,
-            "Ensure the custom context object you pass to make_server_span derives from RequestContext. See: https://git.io/fj5Xn",
+            "Ensure the custom context object you pass to make_server_span derives from "
+            "RequestContext. See: https://git.io/fj5Xn",
         )

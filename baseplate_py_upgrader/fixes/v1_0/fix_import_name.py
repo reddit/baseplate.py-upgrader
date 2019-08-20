@@ -5,6 +5,7 @@ from lib2to3.fixer_util import syms
 from lib2to3.fixer_util import token
 
 from . import get_new_name
+from . import NameRemovedError
 from .. import BaseplateBaseFix
 from .. import Capture
 from .. import ImportAsName
@@ -45,7 +46,12 @@ class FixImportName(BaseplateBaseFix):
         nodes = []
         indent = find_indentation(node)
         for name, nick in imports:
-            new_name = get_new_name(name)
+            try:
+                new_name = get_new_name(name)
+            except NameRemovedError as exc:
+                self.warn(node, str(exc))
+                continue
+
             if new_name:
                 rename_seen = True
                 name = new_name
@@ -55,6 +61,10 @@ class FixImportName(BaseplateBaseFix):
                 prefix=f"\n{indent}",
             )
             nodes.append(new_node)
+
+        if not nodes:
+            return
+
         nodes[0].prefix = node.prefix
 
         if rename_seen:

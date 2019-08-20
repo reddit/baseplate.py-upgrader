@@ -10,6 +10,7 @@ from ...requirements import RequirementsFile
 
 
 RENAMES = {
+    "baseplate._compat": None,
     "baseplate.config": "baseplate.lib.config",
     "baseplate.context": "baseplate.clients",
     "baseplate.core.AuthenticationToken": "baseplate.lib.edge_context.AuthenticationToken",
@@ -32,16 +33,27 @@ RENAMES = {
     "baseplate.error_reporter_from_config": "baseplate.observers.sentry.error_reporter_from_config",
     "baseplate.events": "baseplate.lib.events",
     "baseplate.events.publisher": "baseplate.sidecars.event_publisher",
+    "baseplate.events.publisher.gzip_compress": "gzip.compress",
+    "baseplate.events.publisher.V1Batch": None,
     "baseplate.events.queue": "baseplate.lib.events",
+    "baseplate.events.queue.Event": None,
+    "baseplate.events.queue.FieldKind": None,
+    "baseplate.events.queue.serialize_v1_event": None,
     "baseplate.experiments": "baseplate.lib.experiments",
     "baseplate.file_watcher": "baseplate.lib.file_watcher",
+    "baseplate.frameworks.wrapped_context": None,
     "baseplate.integration": "baseplate.frameworks",
+    "baseplate.integration.pyramid.TRACE_HEADER_NAMES": None,
+    "baseplate.integration.thrift._extract_trace_info": None,
+    "baseplate.integration.thrift.TRACE_HEADER_NAMES": None,
+    "baseplate.integration.thrift.RequestContext": "baseplate.RequestContext",
     "baseplate.live_data": "baseplate.lib.live_data",
     "baseplate.live_data.watcher": "baseplate.sidecars.live_data_watcher",
     "baseplate.message_queue": "baseplate.lib.message_queue",
     "baseplate.metrics": "baseplate.lib.metrics",
     "baseplate.metrics_client_from_config": "baseplate.lib.metrics.metrics_client_from_config",
     "baseplate.queue_consumer": "baseplate.frameworks.queue_consumer",
+    "baseplate.queue_consumer.ConsumerContext": "baseplate.RequestContext",
     "baseplate.random": "baseplate.lib.random",
     "baseplate.ratelimit": "baseplate.lib.ratelimit",
     "baseplate.requests": "baseplate.lib._requests",
@@ -60,7 +72,15 @@ RENAMES = {
     "baseplate._utils.TimeLimitedBatch": "baseplate.sidecars.TimeLimitedBatch",
 }
 
+
 BASEPLATE_NAME_RE = re.compile(r"(?P<name>baseplate\.(?:[A-Za-z_][A-Za-z0-9_]*\.?)+)")
+
+
+class NameRemovedError(Exception):
+    def __init__(self, name: str):
+        super().__init__(
+            f"{repr(name)} does not exist anymore. Remove references to it."
+        )
 
 
 def get_new_name(name: str) -> Optional[str]:
@@ -72,6 +92,9 @@ def get_new_name(name: str) -> Optional[str]:
     """
     for old, new in sorted(RENAMES.items(), key=lambda i: len(i[0]), reverse=True):
         if name == old or name.startswith(old + "."):
+            if new is None:
+                raise NameRemovedError(old)
+
             try:
                 return name.replace(old, new, 1)
             except KeyError:
@@ -84,7 +107,10 @@ def replace_module_references(corpus: str) -> str:
 
     def replace_name(m: Match[str]) -> str:
         old_name = m["name"]
-        new_name = get_new_name(old_name)
+        try:
+            new_name = get_new_name(old_name)
+        except NameRemovedError:
+            new_name = None
         return new_name or old_name
 
     return BASEPLATE_NAME_RE.sub(replace_name, corpus, re.MULTILINE)

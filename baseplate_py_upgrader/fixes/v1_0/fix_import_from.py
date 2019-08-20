@@ -11,6 +11,7 @@ from typing import Optional
 from typing import Tuple
 
 from . import get_new_name
+from . import NameRemovedError
 from .. import BaseplateBaseFix
 from .. import Capture
 from .. import FromImport
@@ -48,7 +49,7 @@ class FixImportFrom(BaseplateBaseFix):
             if n.type in (token.COMMA, token.LPAR, token.RPAR):
                 continue
             elif n.type == token.STAR:
-                self.warning(n, "cannot guarantee * imports are correct")
+                self.warn(n, "Cannot guarantee * imports are correct.")
                 imports.append(("*", None))
             elif n.type == token.NAME:
                 imports.append((n.value, None))
@@ -68,7 +69,11 @@ class FixImportFrom(BaseplateBaseFix):
         ] = collections.defaultdict(list)
         for name, nick in imports:
             full_name = f"{module_name}.{name}"
-            new_full_name = get_new_name(full_name) or full_name
+            try:
+                new_full_name = get_new_name(full_name) or full_name
+            except NameRemovedError as exc:
+                self.warn(node, str(exc))
+                continue
             package, new_name = split_package_and_name(new_full_name)
             if name != new_name and nick is None:
                 nick = name
@@ -89,6 +94,9 @@ class FixImportFrom(BaseplateBaseFix):
                             prefix=f"\n{indent}",
                         )
                     )
+
+        if not nodes:
+            return
 
         nodes[0].prefix = node.prefix
         node.replace(nodes)

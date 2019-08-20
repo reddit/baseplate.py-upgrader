@@ -4,6 +4,7 @@ from lib2to3.fixer_util import token
 from typing import List
 
 from . import get_new_name
+from . import NameRemovedError
 from .. import AttrChain
 from .. import BaseplateBaseFix
 from .. import Capture
@@ -33,7 +34,12 @@ class FixModuleUsage(BaseplateBaseFix):
             else:
                 trailer = node.children[i:]
 
-        new_name = get_new_name(".".join(full_name))
+        try:
+            new_name = get_new_name(".".join(full_name))
+        except NameRemovedError as exc:
+            self.warn(node, str(exc))
+            return
+
         if new_name:
             new_node = Node(syms.power, AttrChain(new_name), prefix=node.prefix)
             for n in trailer:

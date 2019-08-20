@@ -35,6 +35,7 @@ import pytest
                 pass
             """,
         ),
+        ("import baseplate._compat", "import baseplate._compat"),
     ),
 )
 def test_fix_import_name(make_refactorer, before, expected):
@@ -99,6 +100,7 @@ def test_fix_import_name(make_refactorer, before, expected):
             from baseplate.clients.memcache import MonitoredMemcacheConnection
             """,
         ),
+        ("from baseplate._compat import range", "from baseplate._compat import range"),
     ),
 )
 def test_fix_import_from(make_refactorer, before, expected):
@@ -118,6 +120,7 @@ def test_fix_import_from(make_refactorer, before, expected):
             "(baseplate.config.Integer() * 3) + 45",
             "(baseplate.lib.config.Integer() * 3) + 45",
         ),
+        ("(baseplate._compat.long())", "(baseplate._compat.long())"),
     ),
 )
 def test_fix_module_usage(make_refactorer, before, expected):
