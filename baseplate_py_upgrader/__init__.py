@@ -10,6 +10,7 @@ from typing import Dict
 from .colors import Color
 from .colors import colorize
 from .colors import print
+from .docker import upgrade_docker_image_references
 from .fixes import v0_29
 from .fixes import v1_0
 from .requirements import RequirementsFile
@@ -110,6 +111,8 @@ def _main() -> int:
 
     logging.info("Updated baseplate to %s in requirements.txt", target_version)
     requirements_file["baseplate"] = target_version
+
+    upgrade_docker_image_references(target_series, args.source_dir)
 
     updater = UPDATERS[target_series]
     result = updater(args.source_dir, requirements_file, wheelhouse)
