@@ -7,6 +7,7 @@ from typing import Optional
 
 from ...refactor import refactor_python_files
 from ...requirements import RequirementsFile
+from ...wheelhouse import Wheelhouse
 
 
 RENAMES = {
@@ -116,18 +117,24 @@ def replace_module_references(corpus: str) -> str:
     return BASEPLATE_NAME_RE.sub(replace_name, corpus, re.MULTILINE)
 
 
-def update(root: Path, requirements_file: RequirementsFile) -> int:
-    try:
-        current_cqlmapper_version = requirements_file["cqlmapper"]
-    except KeyError:
-        pass
-    else:
-        if current_cqlmapper_version != "0.2":
-            logging.info("Updated CQLMapper to 0.2 in requirements.txt")
-            requirements_file["cqlmapper"] = "0.2"
+def update(
+    root: Path, requirements_file: RequirementsFile, wheelhouse: Wheelhouse
+) -> int:
+    wheelhouse.ensure(requirements_file, "cassandra-driver>=3.13.0")
+    wheelhouse.ensure(requirements_file, "cqlmapper>=0.1.0")
+    wheelhouse.ensure(requirements_file, "gevent>=1.3")
+    wheelhouse.ensure(requirements_file, "hvac>=0.2.17")
+    wheelhouse.ensure(requirements_file, "kazoo>=2.5.0")
+    wheelhouse.ensure(requirements_file, "kombu>=4.0.0")
+    wheelhouse.ensure(requirements_file, "posix_ipc>=1.0.0")
+    wheelhouse.ensure(requirements_file, "pyjwt>=1.6.0")
+    wheelhouse.ensure(requirements_file, "pymemcache>=1.3.0,<=2.0.0")
+    wheelhouse.ensure(requirements_file, "pyramid>=1.9.0")
+    wheelhouse.ensure(requirements_file, "redis>=2.10.0,<=3.0.0")
+    wheelhouse.ensure(requirements_file, "requests>=2.21.0")
+    wheelhouse.ensure(requirements_file, "sqlalchemy>=1.1.0")
+    wheelhouse.ensure(requirements_file, "thrift>=0.12.0")
 
-    # TODO: warn about / update trace crap old style
-    # TODO: warn about things that got removed???
     refactor_python_files(root, __name__)
 
     for path in root.glob("**/*"):

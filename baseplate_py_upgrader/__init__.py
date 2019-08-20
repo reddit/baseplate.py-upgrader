@@ -16,7 +16,9 @@ from .requirements import RequirementsFile
 from .wheelhouse import Wheelhouse
 
 
-def no_op_upgrade(root: Path, requirements_file: RequirementsFile) -> int:
+def no_op_upgrade(
+    root: Path, requirements_file: RequirementsFile, wheelhouse: Wheelhouse
+) -> int:
     # nothing to do here!
     return 0
 
@@ -33,7 +35,7 @@ UPGRADES: Dict[str, str] = {
 PREFIX_OVERRIDE: Dict[str, str] = {"1.0": "0.30.1.dev"}
 
 # packages for updating to a series
-UPDATERS: Dict[str, Callable[[Path, RequirementsFile], int]] = {
+UPDATERS: Dict[str, Callable[[Path, RequirementsFile, Wheelhouse], int]] = {
     "0.27": no_op_upgrade,
     "0.29": v0_29.update,
     "0.30": no_op_upgrade,
@@ -110,7 +112,7 @@ def _main() -> int:
     requirements_file["baseplate"] = target_version
 
     updater = UPDATERS[target_series]
-    result = updater(args.source_dir, requirements_file)
+    result = updater(args.source_dir, requirements_file, wheelhouse)
     requirements_file.write()
 
     if result == 0:
