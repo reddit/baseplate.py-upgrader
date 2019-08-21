@@ -58,7 +58,7 @@ class LogFormatter(logging.Formatter):
     prefixes = {
         logging.DEBUG: colorize("•", Color.BLUE),
         logging.INFO: colorize("✓", Color.GREEN.BOLD),
-        logging.WARNING: colorize("!", Color.YELLOW.BOLD),
+        logging.WARNING: colorize("▲", Color.YELLOW.BOLD),
         logging.ERROR: colorize("✘", Color.RED.BOLD),
         logging.CRITICAL: colorize("✘", Color.RED.BOLD),
     }
