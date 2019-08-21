@@ -13,6 +13,7 @@ from .colors import print
 from .docker import upgrade_docker_image_references
 from .fixes import v0_29
 from .fixes import v1_0
+from .python_version import guess_python_version
 from .requirements import RequirementsFile
 from .wheelhouse import Wheelhouse
 
@@ -98,6 +99,8 @@ def _main() -> int:
         print("That project doesn't seem to use Baseplate.py!", color=Color.RED.BOLD)
         return 1
 
+    python_version = guess_python_version(args.source_dir)
+
     wheelhouse = Wheelhouse.fetch()
     target_series = get_target_series(current_version)
     prefix = PREFIX_OVERRIDE.get(target_series, target_series)
@@ -105,9 +108,20 @@ def _main() -> int:
 
     print("Baseplate.py Upgrader", color=Color.CYAN.BOLD)
     print(f"Upgrading {args.source_dir}")
+    if python_version:
+        print(f"Python version: {'.'.join(str(v) for v in python_version)}")
+    else:
+        print("Failed to detect Python version.", color=Color.YELLOW.BOLD)
     print(f"Current version: v{current_version}")
     print(f"Target version: v{target_version} ({target_series} series)")
     print()
+
+    if target_series == "1.0" and python_version and python_version < (3, 6):
+        print(
+            "Baseplate 1.0+ is only supported on Python 3.6+. Please upgrade.",
+            color=Color.RED.BOLD,
+        )
+        sys.exit(1)
 
     logging.info("Updated baseplate to %s in requirements.txt", target_version)
     requirements_file["baseplate"] = target_version
@@ -127,6 +141,12 @@ def _main() -> int:
         print(" • Apply code formatters to clean up refactored code.")
         print(" • Thoroughly test your application.")
         print(" • Commit the changes.")
+
+        if target_series in UPGRADES:
+            print(
+                "Once you're confident in this upgrade, run this tool again to upgrade further.",
+                color=Color.CYAN.BOLD,
+            )
     else:
         print()
         print("Upgrade failed. Please see above for details.", color=Color.RED.BOLD)
