@@ -12,13 +12,16 @@ PYTHON_REQUIRES_RE = re.compile(
 )
 
 
-def _make_version_tuple(version_str: str) -> Tuple[int, int]:
+PythonVersion = Tuple[int, int]
+
+
+def _make_version_tuple(version_str: str) -> PythonVersion:
     major, sep, minor = version_str.partition(".")
     assert sep and minor
     return (int(major), int(minor))
 
 
-def guess_python_version(root: Path) -> Optional[Tuple[int, int]]:
+def guess_python_version(root: Path) -> Optional[PythonVersion]:
     try:
         setup_py_text = (root / "setup.py").read_text()
         for op, version in PYTHON_REQUIRES_RE.findall(setup_py_text):

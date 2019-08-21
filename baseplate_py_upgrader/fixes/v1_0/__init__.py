@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Match
 from typing import Optional
 
+from ...python_version import PythonVersion
 from ...refactor import refactor_python_files
 from ...requirements import RequirementsFile
 from ...wheelhouse import Wheelhouse
@@ -118,8 +119,20 @@ def replace_module_references(corpus: str) -> str:
 
 
 def update(
-    root: Path, requirements_file: RequirementsFile, wheelhouse: Wheelhouse
+    root: Path,
+    python_version: Optional[PythonVersion],
+    requirements_file: RequirementsFile,
+    wheelhouse: Wheelhouse,
 ) -> int:
+    if python_version:
+        if python_version < (3, 6):
+            logging.error("Baseplate 1.0 requires Python 3.6+. Please upgrade Python first.")
+            return 1
+    else:
+        logging.warning("Baseplate 1.0 requires Python 3.6+. Ensure Python is new enough.")
+
+    refactor_python_files(root, __name__)
+
     wheelhouse.ensure(requirements_file, "cassandra-driver>=3.13.0")
     wheelhouse.ensure(requirements_file, "cqlmapper>=0.1.0")
     wheelhouse.ensure(requirements_file, "gevent>=1.3")
@@ -134,8 +147,6 @@ def update(
     wheelhouse.ensure(requirements_file, "requests>=2.21.0")
     wheelhouse.ensure(requirements_file, "sqlalchemy>=1.1.0")
     wheelhouse.ensure(requirements_file, "thrift>=0.12.0")
-
-    refactor_python_files(root, __name__)
 
     for path in root.glob("**/*"):
         if path.suffix in (".ini", ".txt", ".md", ".rst"):

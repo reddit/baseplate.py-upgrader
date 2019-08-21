@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from typing import Callable
 from typing import Dict
+from typing import Optional
 
 from .colors import Color
 from .colors import colorize
@@ -14,12 +15,16 @@ from .docker import upgrade_docker_image_references
 from .fixes import v0_29
 from .fixes import v1_0
 from .python_version import guess_python_version
+from .python_version import PythonVersion
 from .requirements import RequirementsFile
 from .wheelhouse import Wheelhouse
 
 
 def no_op_upgrade(
-    root: Path, requirements_file: RequirementsFile, wheelhouse: Wheelhouse
+    root: Path,
+    python_version: Optional[PythonVersion],
+    requirements_file: RequirementsFile,
+    wheelhouse: Wheelhouse,
 ) -> int:
     # nothing to do here!
     return 0
@@ -27,6 +32,7 @@ def no_op_upgrade(
 
 # what prefix should upgrade to what series
 UPGRADES: Dict[str, str] = {
+    "0.26": "0.27",
     "0.27": "0.28",
     "0.28": "0.29",
     "0.29": "0.30",
@@ -37,8 +43,11 @@ UPGRADES: Dict[str, str] = {
 PREFIX_OVERRIDE: Dict[str, str] = {"1.0": "0.30.1.dev"}
 
 # packages for updating to a series
-UPDATERS: Dict[str, Callable[[Path, RequirementsFile, Wheelhouse], int]] = {
+UPDATERS: Dict[
+    str, Callable[[Path, Optional[PythonVersion], RequirementsFile, Wheelhouse], int]
+] = {
     "0.27": no_op_upgrade,
+    "0.28": no_op_upgrade,
     "0.29": v0_29.update,
     "0.30": no_op_upgrade,
     "1.0": v1_0.update,
@@ -116,23 +125,16 @@ def _main() -> int:
     print(f"Target version: v{target_version} ({target_series} series)")
     print()
 
-    if target_series == "1.0" and python_version and python_version < (3, 6):
-        print(
-            "Baseplate 1.0+ is only supported on Python 3.6+. Please upgrade.",
-            color=Color.RED.BOLD,
-        )
-        sys.exit(1)
-
-    logging.info("Updated baseplate to %s in requirements.txt", target_version)
-    requirements_file["baseplate"] = target_version
-
-    upgrade_docker_image_references(target_series, args.source_dir)
-
     updater = UPDATERS[target_series]
-    result = updater(args.source_dir, requirements_file, wheelhouse)
-    requirements_file.write()
+    result = updater(args.source_dir, python_version, requirements_file, wheelhouse)
 
     if result == 0:
+        logging.info("Updated baseplate to %s in requirements.txt", target_version)
+        requirements_file["baseplate"] = target_version
+        requirements_file.write()
+
+        upgrade_docker_image_references(target_series, args.source_dir)
+
         print()
         print("Automatic upgrade successful!", color=Color.CYAN.BOLD)
         print("There's more to do:", color=Color.WHITE.BOLD)
