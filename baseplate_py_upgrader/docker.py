@@ -18,7 +18,7 @@ def upgrade_docker_image_references_in_file(target_series: str, filepath: Path) 
     if major == "0":
         image_series = f"{major}.{minor}"
     else:
-        image_series = f"{major}.x"
+        image_series = f"{major}"
 
     def replace_docker_image_reference(m: Match[str]) -> str:
         return f"amazonaws.com/baseplate-py:{image_series}-py{m['python']}-{m['distro']}{m['dev']}"
