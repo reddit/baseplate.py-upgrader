@@ -21,7 +21,7 @@ def upgrade_docker_image_references_in_file(target_series: str, filepath: Path) 
         image_series = f"{major}"
 
     def replace_docker_image_reference(m: Match[str]) -> str:
-        return f"amazonaws.com/baseplate-py:{image_series}-py{m['python']}-{m['distro']}{m['dev']}"
+        return f"amazonaws.com/baseplate-py:{image_series}-py{m['python']}-{m['distro']}{m['dev'] or ''}"
 
     file_content = filepath.read_text()
     changed = IMAGE_RE.sub(replace_docker_image_reference, file_content, re.MULTILINE)
