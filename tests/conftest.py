@@ -25,7 +25,7 @@ class TestRefactoringTool:
         __tracebackhide__ = True
 
         after = self.refactor(before)
-        assert reformat(expected) == after
+        assert reformat(expected).rstrip("\n") == after.rstrip("\n")
 
 
 @pytest.fixture

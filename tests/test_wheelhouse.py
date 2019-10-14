@@ -45,7 +45,7 @@ def test_latest_dev():
         ]
     )
 
-    assert wheelhouse.get_latest_version("baseplate") == "1.0.0.dev10+gcafecafe"
+    assert wheelhouse.get_latest_version("baseplate") == "1.0"
 
 
 def test_parse_clean_release():

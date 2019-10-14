@@ -11,5 +11,3 @@ will be editing source code):
 and then run it on a baseplate.py project you want to upgrade:
 
     baseplate.py-upgrader ~/src/fooservice
-
-Note: this does not currently support upgrades from 0.28 or earlier.

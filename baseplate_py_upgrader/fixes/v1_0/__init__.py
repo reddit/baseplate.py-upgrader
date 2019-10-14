@@ -126,10 +126,14 @@ def update(
 ) -> int:
     if python_version:
         if python_version < (3, 6):
-            logging.error("Baseplate 1.0 requires Python 3.6+. Please upgrade Python first.")
+            logging.error(
+                "Baseplate 1.0 requires Python 3.6+. Please upgrade Python first."
+            )
             return 1
     else:
-        logging.warning("Baseplate 1.0 requires Python 3.6+. Ensure Python is new enough.")
+        logging.warning(
+            "Baseplate 1.0 requires Python 3.6+. Ensure Python is new enough."
+        )
 
     refactor_python_files(root, __name__)
 
