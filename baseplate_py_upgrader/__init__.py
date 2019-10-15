@@ -128,12 +128,11 @@ def _main() -> int:
     updater = UPDATERS[target_series]
     result = updater(args.source_dir, python_version, requirements_file, wheelhouse)
 
+    upgrade_docker_image_references(target_series, args.source_dir)
+
     if result == 0:
         logging.info("Updated baseplate to %s in requirements.txt", target_version)
         requirements_file["baseplate"] = target_version
-        requirements_file.write()
-
-        upgrade_docker_image_references(target_series, args.source_dir)
 
         print()
         print("Automatic upgrade successful!", color=Color.CYAN.BOLD)
@@ -152,6 +151,8 @@ def _main() -> int:
     else:
         print()
         print("Upgrade failed. Please see above for details.", color=Color.RED.BOLD)
+
+    requirements_file.write()
 
     return result
 
