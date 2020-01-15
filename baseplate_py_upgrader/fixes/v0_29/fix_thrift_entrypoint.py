@@ -40,14 +40,25 @@ class FixThriftEntrypoint(BaseplateBaseFix):
         |
         simple_stmt<
         (
-            expr_stmt< NAME '=' power<'BaseplateProcessorEventHandler' any*> any* >
-            |
-            expr_stmt<
-                processor_name=NAME '='
+            make_processor=expr_stmt<
+                NAME '='
                 power< NAME trailer <'.' processor_class='ContextProcessor'> any*>
             >
             |
-            power< NAME trailer<'.' 'setEventHandler'> any* >
+            make_event_handler=expr_stmt<
+                NAME '=' power<
+                    'BaseplateProcessorEventHandler'
+                    trailer<
+                        '('
+                        arglist<
+                            arguments=any*
+                        >
+                        ')'
+                    >
+                >
+            >
+            |
+            set_event_handler=power< processor_name=NAME trailer<'.' 'setEventHandler'> any* >
         ) any*>
     )
     """
@@ -98,11 +109,28 @@ class FixThriftEntrypoint(BaseplateBaseFix):
         elif node.type == syms.power:
             capture["iface_class"].replace(Name("Iface"))
         elif node.type == syms.simple_stmt:
-            if "processor_class" in capture:
+            if "make_processor" in capture:
                 capture["processor_class"].replace(Name("Processor"))
+            elif "make_event_handler" in capture:
+                self.arguments = [arg.clone() for arg in capture["arguments"]]
+                self.remove_me = node
+            elif "set_event_handler" in capture:
+                processor_name = capture["processor_name"].clone()
+                processor_name.prefix = ""
+                arguments = [processor_name, Comma()]
+                original_arguments = getattr(self, "arguments", None)
+                if original_arguments:
+                    original_arguments[0].prefix = " "
+                    arguments.extend(original_arguments)
+                else:
+                    arguments.extend((
+                        Name("logger", prefix=" "),
+                        Comma(),
+                        Name("baseplate", prefix=" "),
+                    ))
+
                 node.replace(
                     [
-                        node,
                         Assign(
                             capture["processor_name"].clone(),
                             Node(
@@ -110,13 +138,7 @@ class FixThriftEntrypoint(BaseplateBaseFix):
                                 [
                                     Call(
                                         Name("baseplateify_processor"),
-                                        [
-                                            Name("processor"),
-                                            Comma(),
-                                            Name("logger", prefix=" "),
-                                            Comma(),
-                                            Name("baseplate", prefix=" "),
-                                        ],
+                                        arguments,
                                     )
                                 ],
                             ),
@@ -124,7 +146,8 @@ class FixThriftEntrypoint(BaseplateBaseFix):
                         Newline(),
                     ]
                 )
-            else:
-                node.remove()
+
+                if hasattr(self, "remove_me"):
+                    self.remove_me.remove()
         else:
             raise Exception("unrecognized match")

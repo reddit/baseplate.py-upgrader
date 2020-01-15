@@ -18,6 +18,32 @@ import pytest
             "class Handler(MyService.ContextIface): pass",
             "class Handler(MyService.Iface): pass",
         ),
+        (
+            """
+            def make_app():
+                processor = MyService.ContextProcessor(handler)
+                event_handler = BaseplateProcessorEventHandler(logger, baseplate)
+                processor.setEventHandler(event_handler)
+            """,
+            """
+            def make_app():
+                processor = MyService.Processor(handler)
+                processor = baseplateify_processor(processor, logger, baseplate)
+            """,
+        ),
+        (
+            """
+            def make_app():
+                processor = MyService.ContextProcessor(handler)
+                event_handler = BaseplateProcessorEventHandler(logger, baseplate, foo=bar)
+                processor.setEventHandler(event_handler)
+            """,
+            """
+            def make_app():
+                processor = MyService.Processor(handler)
+                processor = baseplateify_processor(processor, logger, baseplate, foo=bar)
+            """,
+        ),
     ),
 )
 def test_thrift_entrypoint(make_refactorer, before, expected):
