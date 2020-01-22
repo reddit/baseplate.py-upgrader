@@ -32,14 +32,14 @@ def guess_python_version(root: Path) -> Optional[PythonVersion]:
     try:
         dockerfile_text = (root / "Dockerfile").read_text()
         for match in IMAGE_RE.findall(dockerfile_text):
-            return _make_version_tuple(match[1])
+            return _make_version_tuple(match[2])
     except OSError:
         pass
 
     try:
         dockerfile_text = (root / ".drone.yml").read_text()
         for match in IMAGE_RE.findall(dockerfile_text):
-            return _make_version_tuple(match[1])
+            return _make_version_tuple(match[2])
     except OSError:
         pass
 

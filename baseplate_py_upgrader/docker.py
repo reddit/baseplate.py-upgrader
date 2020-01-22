@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 IMAGE_RE = re.compile(
-    r"amazonaws.com/baseplate-py:(?P<version>[0-9.]+\.[0-9]+)-py(?P<python>[23]\.[0-9]+)-(?P<distro>bionic)(?P<dev>-dev)?"
+    r"amazonaws.com/baseplate-py:(?P<version>[0-9.]+(\.[0-9]+)?)-py(?P<python>[23]\.[0-9]+)-(?P<distro>bionic)(?P<dev>-dev)?"
 )
 
 
