@@ -182,3 +182,17 @@ def test_fix_make_context_object(caplog, make_refactorer, input):
     assert result, "parse failed"
     assert caplog.records
     assert caplog.records[0].levelname == "WARNING"
+
+
+@pytest.mark.parametrize(
+    "input",
+    ("baseplate.add_to_context('cassandra', CQLMapperContextFactory(session))",),
+)
+def test_fix_make_context_object(caplog, make_refactorer, input):
+    refactorer = make_refactorer(
+        "baseplate_py_upgrader.fixes.v1_0.fix_cass_execution_profiles"
+    )
+    result = refactorer.refactor(input)
+    assert result, "parse failed"
+    assert caplog.records
+    assert caplog.records[0].levelname == "WARNING"
