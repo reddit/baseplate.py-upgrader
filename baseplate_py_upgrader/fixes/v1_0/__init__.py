@@ -138,7 +138,7 @@ def update(
     refactor_python_files(root, __name__)
 
     wheelhouse.ensure(requirements_file, "cassandra-driver>=3.13.0")
-    wheelhouse.ensure(requirements_file, "cqlmapper>=0.1.0")
+    wheelhouse.ensure(requirements_file, "cqlmapper>=0.2.0")
     wheelhouse.ensure(requirements_file, "gevent>=1.3")
     wheelhouse.ensure(requirements_file, "hvac>=0.2.17")
     wheelhouse.ensure(requirements_file, "kazoo>=2.5.0")
