@@ -14,6 +14,7 @@ from .colors import print
 from .docker import upgrade_docker_image_references
 from .fixes import v0_29
 from .fixes import v1_0
+from .fixes import v1_3
 from .python_version import guess_python_version
 from .python_version import PythonVersion
 from .requirements import RequirementsFile
@@ -39,6 +40,7 @@ UPGRADES: Dict[str, str] = {
     "0.30": "1.0",
     "1.0": "1.1",
     "1.1": "1.2",
+    "1.2": "1.3",
 }
 
 # this is useful if we're dealing with pre-releases temporarily
@@ -55,6 +57,7 @@ UPDATERS: Dict[
     "1.0": v1_0.update,
     "1.1": no_op_upgrade,
     "1.2": no_op_upgrade,
+    "1.3": v1_3.update,
 }
 
 
@@ -173,3 +176,4 @@ def main() -> None:
         sys.exit(_main())
     except Exception as exc:
         print(f"Error: {exc}", color=Color.RED.BOLD)
+        raise
