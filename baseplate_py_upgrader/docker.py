@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 IMAGE_RE = re.compile(
-    r"amazonaws.com/baseplate-py:(?P<version>[0-9.]+(\.[0-9]+)?)-py(?P<python>[23]\.[0-9]+)-(?P<distro>bionic)(?P<dev>-dev)?"
+    r"/baseplate-py:(?P<version>[0-9.]+(\.[0-9]+)?)-py(?P<python>[23]\.[0-9]+)-(?P<distro>bionic)(?P<dev>-dev)?"
 )
 
 
@@ -21,7 +21,7 @@ def upgrade_docker_image_references_in_file(target_series: str, filepath: Path) 
         image_series = f"{major}"
 
     def replace_docker_image_reference(m: Match[str]) -> str:
-        return f"amazonaws.com/baseplate-py:{image_series}-py{m['python']}-{m['distro']}{m['dev'] or ''}"
+        return f"/baseplate-py:{image_series}-py{m['python']}-{m['distro']}{m['dev'] or ''}"
 
     file_content = filepath.read_text()
     changed = IMAGE_RE.sub(replace_docker_image_reference, file_content, re.MULTILINE)
