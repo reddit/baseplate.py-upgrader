@@ -42,6 +42,7 @@ UPGRADES: Dict[str, str] = {
     "1.1": "1.2",
     "1.2": "1.3",
     "1.3": "1.4",
+    "1.4": "1.5",
 }
 
 # this is useful if we're dealing with pre-releases temporarily
@@ -60,6 +61,7 @@ UPDATERS: Dict[
     "1.2": no_op_upgrade,
     "1.3": v1_3.update,
     "1.4": no_op_upgrade,
+    "1.5": no_op_upgrade,
 }
 
 
