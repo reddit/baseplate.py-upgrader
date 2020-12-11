@@ -79,7 +79,7 @@ class LogFormatter(logging.Formatter):
 
 
 def is_git_repo_and_clean(root: Path) -> bool:
-    result = subprocess.run(["git", "status", "-s"], cwd=root, capture_output=True)
+    result = subprocess.run(["git", "status", "-s", "--untracked-files=no"], cwd=root, capture_output=True)
     return result.returncode == 0 and not result.stdout
 
 
