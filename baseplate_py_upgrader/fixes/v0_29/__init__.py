@@ -2,24 +2,25 @@ import configparser
 import logging
 
 from pathlib import Path
+from typing import Dict
 from typing import Optional
 
+from ...package_repo import PackageRepo
 from ...python_version import PythonVersion
 from ...refactor import refactor_python_files
 from ...requirements import RequirementsFile
-from ...wheelhouse import Wheelhouse
 from .thrift import find_invalid_thrift_idl
 
 
 def add_max_concurrency(root: Path) -> None:
-    servers = {}
+    servers: Dict[str, Optional[int]] = {}
 
     for path in root.glob("**/*.ini"):
         config_lines = path.read_text().splitlines()
 
         current_server = None
         for i, line in enumerate(config_lines):
-            m = configparser.RawConfigParser.SECTCRE.match(line)
+            m = configparser.RawConfigParser.SECTCRE.match(line)  # type: ignore
             if m:
                 name = m.group("header")
                 if name.startswith("server:"):
@@ -29,7 +30,7 @@ def add_max_concurrency(root: Path) -> None:
                 continue
 
             if current_server:
-                m = configparser.RawConfigParser.OPTCRE.match(line)
+                m = configparser.RawConfigParser.OPTCRE.match(line)  # type: ignore
                 if m:
                     name = m.group("option")
                     if name == "max_concurrency":
@@ -72,11 +73,11 @@ def update(
     root: Path,
     python_version: Optional[PythonVersion],
     requirements_file: RequirementsFile,
-    wheelhouse: Wheelhouse,
+    package_repo: PackageRepo,
 ) -> int:
     result = 0
 
-    wheelhouse.ensure(requirements_file, "thrift>=0.12.0")
+    package_repo.ensure(requirements_file, "thrift>=0.12.0")
 
     refactor_python_files(root, __name__)
 
@@ -87,6 +88,8 @@ def update(
 
     fix_thrift_compiler_references(root)
 
-    logging.warning("Verify that Thrift method calls specify all params. See https://git.io/Je4HV")
+    logging.warning(
+        "Verify that Thrift method calls specify all params. See https://git.io/Je4HV"
+    )
 
     return result

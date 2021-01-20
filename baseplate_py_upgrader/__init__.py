@@ -15,17 +15,18 @@ from .docker import upgrade_docker_image_references
 from .fixes import v0_29
 from .fixes import v1_0
 from .fixes import v1_3
+from .fixes import v2_0
+from .package_repo import PackageRepo
 from .python_version import guess_python_version
 from .python_version import PythonVersion
 from .requirements import RequirementsFile
-from .wheelhouse import Wheelhouse
 
 
 def no_op_upgrade(
     root: Path,
     python_version: Optional[PythonVersion],
     requirements_file: RequirementsFile,
-    wheelhouse: Wheelhouse,
+    package_repo: PackageRepo,
 ) -> int:
     # nothing to do here!
     return 0
@@ -43,14 +44,15 @@ UPGRADES: Dict[str, str] = {
     "1.2": "1.3",
     "1.3": "1.4",
     "1.4": "1.5",
+    "1.5": "2.0",
 }
 
 # this is useful if we're dealing with pre-releases temporarily
-PREFIX_OVERRIDE: Dict[str, str] = {}
+PREFIX_OVERRIDE: Dict[str, str] = {"2.0": "2.0.0a1"}
 
 # packages for updating to a series
 UPDATERS: Dict[
-    str, Callable[[Path, Optional[PythonVersion], RequirementsFile, Wheelhouse], int]
+    str, Callable[[Path, Optional[PythonVersion], RequirementsFile, PackageRepo], int]
 ] = {
     "0.27": no_op_upgrade,
     "0.28": no_op_upgrade,
@@ -62,6 +64,7 @@ UPDATERS: Dict[
     "1.3": v1_3.update,
     "1.4": no_op_upgrade,
     "1.5": no_op_upgrade,
+    "2.0": v2_0.update,
 }
 
 
@@ -74,12 +77,22 @@ class LogFormatter(logging.Formatter):
         logging.CRITICAL: colorize("✘", Color.RED.BOLD),
     }
 
+    text_colors = {
+        logging.DEBUG: Color.GRAY,
+        logging.INFO: Color.GRAY,
+        logging.WARNING: Color.BRIGHT_WHITE,
+        logging.ERROR: Color.BRIGHT_WHITE,
+        logging.CRITICAL: Color.BRIGHT_WHITE,
+    }
+
     def format(self, record: logging.LogRecord) -> str:
-        return f" {self.prefixes[record.levelno]} {super().format(record)}"
+        return f" {self.prefixes[record.levelno]} {colorize(super().format(record), self.text_colors[record.levelno])}"
 
 
 def is_git_repo_and_clean(root: Path) -> bool:
-    result = subprocess.run(["git", "status", "-s", "--untracked-files=no"], cwd=root, capture_output=True)
+    result = subprocess.run(
+        ["git", "status", "-s", "--untracked-files=no"], cwd=root, capture_output=True
+    )
     return result.returncode == 0 and not result.stdout
 
 
@@ -121,10 +134,10 @@ def _main() -> int:
 
     python_version = guess_python_version(args.source_dir)
 
-    wheelhouse = Wheelhouse.fetch()
+    package_repo = PackageRepo.new()
     target_series = get_target_series(current_version)
     prefix = PREFIX_OVERRIDE.get(target_series, target_series)
-    target_version = wheelhouse.get_latest_version("baseplate", prefix=prefix)
+    target_version = package_repo.get_latest_version("baseplate", prefix=prefix)
 
     print("Baseplate.py Upgrader", color=Color.CYAN.BOLD)
     print(f"Upgrading {args.source_dir}")
@@ -136,8 +149,17 @@ def _main() -> int:
     print(f"Target version: v{target_version} ({target_series} series)")
     print()
 
+    if "a" in target_version or "b" in target_version or "rc" in target_version:
+        print(f"v{target_version} is a pre-release!", color=Color.YELLOW.BOLD)
+        print("Upgrades to this version may not be stable yet.")
+        answer = input("To continue, type YES: ")
+        if answer != "YES":
+            print("Bailing out!")
+            return 0
+        print("OK! Be careful!")
+
     updater = UPDATERS[target_series]
-    result = updater(args.source_dir, python_version, requirements_file, wheelhouse)
+    result = updater(args.source_dir, python_version, requirements_file, package_repo)
 
     upgrade_docker_image_references(target_series, args.source_dir)
 

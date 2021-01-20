@@ -8,12 +8,10 @@ import pytest
         ("baseplate = Baseplate(app_config)", []),
         ("baseplate = Baseplate({})", []),
         ("baseplate = Baseplate({'foo': 'bar'})", []),
-
         ("baseplate.configure_observers(app_config)", ["WARNING"]),
         ("baseplate.configure_observers(module_name='foo')", []),
         ("baseplate.configure_observers(app_config, module_name='foo')", ["WARNING"]),
         ("baseplate.configure_observers()", []),
-
         ("baseplate.configure_context(app_config, {})", ["WARNING"]),
         ("baseplate.configure_context(app_config, {'foo': 'bar'})", ["WARNING"]),
         ("baseplate.configure_context(app_config, my_dict)", ["WARNING"]),
@@ -32,6 +30,8 @@ def test_fix_deprecated_wireup(caplog, make_refactorer, input, expected_logs):
     if expected_logs:
         assert caplog.records
         for i, expected_levelname in enumerate(expected_logs):
-            assert caplog.records[i].levelname == expected_levelname, "no warning emitted"
+            assert (
+                caplog.records[i].levelname == expected_levelname
+            ), "no warning emitted"
     else:
         assert not caplog.records, "unexpected warning emitted"

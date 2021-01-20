@@ -17,6 +17,9 @@ class Color(enum.Enum):
     CYAN = "36"
     WHITE = "37"
 
+    GRAY = "90"
+    BRIGHT_WHITE = "97"
+
     BOLD_RED = "1;31"
     BOLD_GREEN = "1;32"
     BOLD_YELLOW = "1;33"

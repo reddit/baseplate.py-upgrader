@@ -123,11 +123,13 @@ class FixThriftEntrypoint(BaseplateBaseFix):
                     original_arguments[0].prefix = " "
                     arguments.extend(original_arguments)
                 else:
-                    arguments.extend((
-                        Name("logger", prefix=" "),
-                        Comma(),
-                        Name("baseplate", prefix=" "),
-                    ))
+                    arguments.extend(
+                        (
+                            Name("logger", prefix=" "),
+                            Comma(),
+                            Name("baseplate", prefix=" "),
+                        )
+                    )
 
                 node.replace(
                     [
@@ -135,12 +137,7 @@ class FixThriftEntrypoint(BaseplateBaseFix):
                             capture["processor_name"].clone(),
                             Node(
                                 syms.simple_stmt,
-                                [
-                                    Call(
-                                        Name("baseplateify_processor"),
-                                        arguments,
-                                    )
-                                ],
+                                [Call(Name("baseplateify_processor"), arguments)],
                             ),
                         ),
                         Newline(),

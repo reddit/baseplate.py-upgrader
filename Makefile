@@ -18,7 +18,7 @@ fmt:
 
 
 test:
-	pytest
+	python -m pytest -v tests/
 
 
 .PHONY: lint fmt test

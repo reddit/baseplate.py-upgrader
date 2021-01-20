@@ -188,7 +188,7 @@ def test_fix_make_context_object(caplog, make_refactorer, input):
     "input",
     ("baseplate.add_to_context('cassandra', CQLMapperContextFactory(session))",),
 )
-def test_fix_make_context_object(caplog, make_refactorer, input):
+def test_fix_cass_execution_profiles(caplog, make_refactorer, input):
     refactorer = make_refactorer(
         "baseplate_py_upgrader.fixes.v1_0.fix_cass_execution_profiles"
     )

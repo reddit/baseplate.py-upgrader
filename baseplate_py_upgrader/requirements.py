@@ -50,6 +50,24 @@ class RequirementsFile:
                     return
         self.lines.append(f"{distribution_name}=={version}")
 
+    def __delitem__(self, distribution_name: str) -> None:
+        for i, line in enumerate(self.lines):
+            m = REQUIREMENT_RE.match(line)
+            if m:
+                if m["distribution"].lower() == distribution_name.lower():
+                    break
+        else:
+            return
+
+        del self.lines[i]
+
+    def __contains__(self, distribution_name: str) -> bool:
+        try:
+            self.__getitem__(distribution_name)
+            return True
+        except KeyError:
+            return False
+
     def write(self) -> None:
         with self.path.open("w") as f:
             f.write("\n".join(self.lines) + "\n")
