@@ -78,16 +78,25 @@ class PackageRepo:
         if distribution_name not in self._cache:
             versions = []
 
-            with urllib.request.urlopen(
-                f"https://pypi.org/pypi/{distribution_name}/json"
-            ) as f:
-                package_info = json.load(f)
+            try:
+                with urllib.request.urlopen(
+                    f"https://pypi.org/pypi/{distribution_name}/json"
+                ) as f:
+                    package_info = json.load(f)
 
-                for version, files in package_info["releases"].items():
-                    if all(file["yanked"] for file in files):
-                        continue
+                    for version, files in package_info["releases"].items():
+                        if all(file["yanked"] for file in files):
+                            continue
 
-                    versions.append(version)
+                        versions.append(version)
+            except urllib.error.HTTPError as exc:
+                if exc.code != 404:
+                    raise
+
+                # unfortunate hack due to pypi issues. this package comes from the
+                # wheelhouse.
+                if distribution_name == "cqlmapper":
+                    return ["0.2.4"]
 
             self._cache[distribution_name] = versions
         return self._cache[distribution_name]
