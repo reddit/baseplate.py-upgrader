@@ -153,7 +153,7 @@ def _main() -> int:
         print(f"v{target_version} is a pre-release!", color=Color.YELLOW.BOLD)
         print("Upgrades to this version may not be stable yet.")
         answer = input("To continue, type YES: ")
-        if answer != "YES":
+        if answer.upper() != "YES":
             print("Bailing out!")
             return 0
         print("OK! Be careful!")
