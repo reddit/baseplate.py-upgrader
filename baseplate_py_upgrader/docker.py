@@ -3,13 +3,14 @@ import re
 
 from pathlib import Path
 from typing import Match
+from typing import Optional
 
 
 logger = logging.getLogger(__name__)
 
 
 IMAGE_RE = re.compile(
-    r"/baseplate-py:(?P<version>[0-9.]+(\.[0-9]+)?)-py(?P<python>[23]\.[0-9]+)-(?P<distro>bionic)(?P<dev>-dev)?"
+    r"/baseplate-py:(?P<version>[0-9.]+(\.[0-9]+)?)-py(?P<python>[23]\.[0-9]+)-(?P<distro>(bionic|buster))(?P<dev>-dev)?"
 )
 
 
@@ -20,8 +21,16 @@ def upgrade_docker_image_references_in_file(target_series: str, filepath: Path) 
     else:
         image_series = f"{major}"
 
+    force_distro = None
+    force_dev = False
+    if major == "2":
+        force_distro = "buster"
+        force_dev = True
+
     def replace_docker_image_reference(m: Match[str]) -> str:
-        return f"/baseplate-py:{image_series}-py{m['python']}-{m['distro']}{m['dev'] or ''}"
+        distro = force_distro or m["distro"]
+        dev = "-dev" if force_dev else m["dev"]
+        return f"/baseplate-py:{image_series}-py{m['python']}-{distro}{dev or ''}"
 
     file_content = filepath.read_text()
     changed = IMAGE_RE.sub(replace_docker_image_reference, file_content, re.MULTILINE)
