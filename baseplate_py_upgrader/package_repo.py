@@ -4,6 +4,7 @@ import json
 import logging
 import operator
 import re
+import urllib.error
 import urllib.request
 
 from typing import Callable

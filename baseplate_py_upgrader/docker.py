@@ -3,7 +3,6 @@ import re
 
 from pathlib import Path
 from typing import Match
-from typing import Optional
 
 
 logger = logging.getLogger(__name__)
