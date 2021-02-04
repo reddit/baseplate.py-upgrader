@@ -163,7 +163,7 @@ def update(
     package_repo.ensure(requirements_file, "gevent>=20.5.0")
     package_repo.ensure(requirements_file, "greenlet>=0.4.17")
     package_repo.ensure(requirements_file, "thrift>=0.14")
-    package_repo.ensure(requirements_file, "python-json-logger>=0.1.11", required=True)
+    package_repo.ensure(requirements_file, "python-json-logger>=0.1.11,<1.0", required=True)
 
     if "baseplate.lib.experiments" in RENAMES.names_seen:
         package_repo.ensure(
@@ -171,6 +171,8 @@ def update(
         )
 
     if "baseplate.lib.edge_context" in RENAMES.names_seen:
+        package_repo.ensure(requirements_file, "cryptography>=3.0,<4.0", required=True)
+        package_repo.ensure(requirements_file, "PyJWT>=2.0,<3.0", required=True)
         package_repo.ensure(
             requirements_file, "reddit-edgecontext>=1.0.0a1", required=True
         )

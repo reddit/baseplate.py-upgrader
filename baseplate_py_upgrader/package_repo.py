@@ -23,12 +23,12 @@ logger = logging.getLogger(__name__)
 
 VERSION_RE = re.compile(r"^(?P<release>[0-9]+(?:\.[0-9]+)*)(?:\.dev(?P<dev>\d+)\+.*)?")
 REQUIREMENT_RE = re.compile(
-    r"^\s*(?P<distribution>[A-Za-z0-9_.-]+)\s*(?P<requirements>((>=|<=|==)[0-9ab.]+,?)+)$"
+    r"^\s*(?P<distribution>[A-Za-z0-9_.-]+)\s*(?P<requirements>((>=|<=|==|<)[0-9ab.]+,?)+)$"
 )
-SPECIFIER_RE = re.compile("^(?P<op>>=|<=|==)(?P<version>[0-9ab.]+)$")
+SPECIFIER_RE = re.compile("^(?P<op>>=|<=|==|<)(?P<version>[0-9ab.]+)$")
 
 
-OPERATORS = {">=": operator.ge, "<=": operator.le, "==": operator.eq}
+OPERATORS = {">=": operator.ge, "<=": operator.le, "==": operator.eq, "<": operator.lt}
 
 
 class PackageRepoError(Exception):
