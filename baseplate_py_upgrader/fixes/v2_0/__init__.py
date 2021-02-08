@@ -193,6 +193,10 @@ def update(
         del requirements_file["raven"]
         package_repo.ensure(requirements_file, "sentry-sdk>=0.19", required=True)
 
+    if "cqlmapper" in requirements_file:
+        del requirements_file["cqlmapper"]
+        package_repo.ensure(requirements_file, "reddit-cqlmapper>=0.3,1.0", required=True)
+
     logging.warning(
         "Update runtime metrics queries to use tags. See https://git.io/JtCvj"
     )
