@@ -169,7 +169,9 @@ def update(
     package_repo.ensure(requirements_file, "gevent>=20.5.0")
     package_repo.ensure(requirements_file, "greenlet>=0.4.17")
     package_repo.ensure(requirements_file, "thrift>=0.14")
-    package_repo.ensure(requirements_file, "python-json-logger>=2.0,<3.0", required=True)
+    package_repo.ensure(
+        requirements_file, "python-json-logger>=2.0,<3.0", required=True
+    )
 
     if "baseplate.lib.experiments" in RENAMES.names_seen:
         package_repo.ensure(
@@ -201,7 +203,9 @@ def update(
 
     if "cqlmapper" in requirements_file:
         del requirements_file["cqlmapper"]
-        package_repo.ensure(requirements_file, "reddit-cqlmapper>=0.3,<1.0", required=True)
+        package_repo.ensure(
+            requirements_file, "reddit-cqlmapper>=0.3,<1.0", required=True
+        )
 
     logging.warning(
         "Update runtime metrics queries to use tags. See https://git.io/JtCvj"
