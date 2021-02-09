@@ -35,11 +35,17 @@ RENAMES = RenamedSymbols(
 )
 
 
+class DefaultHandlingDefaultDict(collections.defaultdict):
+    def __setitem__(self, key: str, value: str) -> None:
+        super().__setitem__("DEFAULT", value)
+        super().__setitem__(key, value)
+
+
 def update_config_file(path: Path) -> None:
     additions_by_section: Dict[str, Dict[str, str]] = collections.defaultdict(dict)
-    deletions_by_section: Dict[str, List[str]] = collections.defaultdict(list)
+    deletions_by_section: Dict[str, List[str]] = DefaultHandlingDefaultDict(list)
     sections_to_delete: List[str] = []
-    renames_by_section: Dict[str, Dict[str, str]] = collections.defaultdict(dict)
+    renames_by_section: Dict[str, Dict[str, str]] = DefaultHandlingDefaultDict(dict)
 
     parser = configparser.RawConfigParser()
     with path.open() as fp:
