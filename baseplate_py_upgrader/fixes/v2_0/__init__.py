@@ -3,9 +3,11 @@ import configparser
 import logging
 
 from pathlib import Path
+from typing import DefaultDict
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import TypeVar
 
 from ...package_repo import PackageRepo
 from ...python_version import PythonVersion
@@ -35,8 +37,11 @@ RENAMES = RenamedSymbols(
 )
 
 
-class DefaultHandlingDefaultDict(collections.defaultdict):
-    def __setitem__(self, key: str, value: str) -> None:
+V = TypeVar("V")
+
+
+class DefaultHandlingDefaultDict(DefaultDict[str, V]):
+    def __setitem__(self, key: str, value: V) -> None:
         super().__setitem__("DEFAULT", value)
         super().__setitem__(key, value)
 
