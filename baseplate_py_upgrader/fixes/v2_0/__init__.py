@@ -187,7 +187,7 @@ def update(
         package_repo.ensure(requirements_file, "cryptography>=3.0,<4.0", required=True)
         package_repo.ensure(requirements_file, "PyJWT>=2.0,<3.0", required=True)
         package_repo.ensure(
-            requirements_file, "reddit-edgecontext>=1.0.0a1", required=True
+            requirements_file, "reddit-edgecontext>=1.0.0a4", required=True
         )
 
     for path in root.glob("**/*.ini"):
