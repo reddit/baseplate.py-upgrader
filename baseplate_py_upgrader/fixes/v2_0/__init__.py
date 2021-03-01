@@ -68,9 +68,8 @@ def update_config_file(path: Path) -> None:
 
         if section.startswith("app:"):
             if "server_timeout.default" not in parser[section]:
-                additions_by_section[section]["server_timeout.default"] = "infinite"
                 logging.warning(
-                    "[%s] in %s: Added server_timeout.default = infinite. Consider setting a lower timeout.",
+                    "[%s] in %s: No server_timeout.default. For Thrift/HTTP servers, please set one.",
                     section,
                     path,
                 )
