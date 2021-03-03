@@ -48,7 +48,7 @@ UPGRADES: Dict[str, str] = {
 }
 
 # this is useful if we're dealing with pre-releases temporarily
-PREFIX_OVERRIDE: Dict[str, str] = {"2.0": "2.0.0a2"}
+PREFIX_OVERRIDE: Dict[str, str] = {"2.0": "2.0.0a4"}
 
 # packages for updating to a series
 UPDATERS: Dict[

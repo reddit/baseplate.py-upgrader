@@ -172,7 +172,6 @@ def update(
 
     package_repo.ensure(requirements_file, "gevent>=20.5.0")
     package_repo.ensure(requirements_file, "greenlet>=0.4.17")
-    package_repo.ensure(requirements_file, "thrift>=0.14")
     package_repo.ensure(
         requirements_file, "python-json-logger>=2.0,<3.0", required=True
     )
@@ -186,8 +185,12 @@ def update(
         package_repo.ensure(requirements_file, "cryptography>=3.0,<4.0", required=True)
         package_repo.ensure(requirements_file, "PyJWT>=2.0,<3.0", required=True)
         package_repo.ensure(
-            requirements_file, "reddit-edgecontext>=1.0.0a4", required=True
+            requirements_file, "reddit-edgecontext>=1.0.0a8", required=True
         )
+
+    if "thrift" in requirements_file:
+        del requirements_file["thrift"]
+        package_repo.ensure(requirements_file, "thrift-unofficial>=0.14.1,<1.0")
 
     for path in root.glob("**/*.ini"):
         if path.is_symlink():
