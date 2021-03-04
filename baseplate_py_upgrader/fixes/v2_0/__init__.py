@@ -190,7 +190,9 @@ def update(
 
     if "thrift" in requirements_file:
         del requirements_file["thrift"]
-        package_repo.ensure(requirements_file, "thrift-unofficial>=0.14.1,<1.0")
+        package_repo.ensure(
+            requirements_file, "thrift-unofficial>=0.14.1,<1.0", required=True
+        )
 
     for path in root.glob("**/*.ini"):
         if path.is_symlink():
