@@ -178,14 +178,14 @@ def update(
 
     if "baseplate.lib.experiments" in RENAMES.names_seen:
         package_repo.ensure(
-            requirements_file, "reddit-experiments>=1.0.0a1", required=True
+            requirements_file, "reddit-experiments>=1.0.0", required=True
         )
 
     if "baseplate.lib.edge_context" in RENAMES.names_seen:
-        package_repo.ensure(requirements_file, "cryptography>=3.0,<4.0", required=True)
+        package_repo.ensure(requirements_file, "cryptography>=3.0,<3.4", required=True)
         package_repo.ensure(requirements_file, "PyJWT>=2.0,<3.0", required=True)
         package_repo.ensure(
-            requirements_file, "reddit-edgecontext>=1.0.0a8", required=True
+            requirements_file, "reddit-edgecontext>=1.0.0", required=True
         )
 
     if "thrift" in requirements_file:
