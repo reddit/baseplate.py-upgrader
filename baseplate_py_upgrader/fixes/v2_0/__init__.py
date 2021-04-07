@@ -102,6 +102,11 @@ def update_config_file(path: Path) -> None:
                     "sentry.additional_ignore_exceptions"
                 )
 
+            if parser[section].get("metrics.tagging", "").lower() == "true":
+                logging.warning(
+                    "Tagged metrics paths have changed. Update dashboards. See https://git.io/JYAPI"
+                )
+
             for opt in parser[section]:
                 if opt.endswith("max_retries"):
                     prefix, *_ = opt.rpartition(".")
@@ -218,6 +223,10 @@ def update(
 
     logging.warning(
         "Update runtime metrics queries to use tags. See https://git.io/JtCvj"
+    )
+
+    logging.warning(
+        "Update OneVM manifests for compatibility. See https://git.io/JYAPJ"
     )
 
     return 0
