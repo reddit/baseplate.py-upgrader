@@ -156,6 +156,17 @@ def update_config_file(path: Path) -> None:
         fp.write("".join(lines))
 
 
+def check_for_old_docker_builder(root: Path):
+    dronefile = root / ".drone.yml"
+    try:
+        with dronefile.open(encoding="utf8", errors="replace") as f:
+            for lineno, line in enumerate(f.readlines()):
+                if "drone-plugin-docker" in line:
+                    logging.warning("Line %d of .drone.yml: drone-plugin-docker does not work with Artifactory. Search 'How to Upgrade Your Baseplate Service To Use Artifactory' on Confluence for upgrade instructions.", lineno)
+    except IOError:
+        return
+
+
 def update(
     root: Path,
     python_version: Optional[PythonVersion],
@@ -228,5 +239,7 @@ def update(
     logging.warning(
         "Update OneVM manifests for compatibility. See https://git.io/JYAPJ"
     )
+
+    check_for_old_docker_builder(root)
 
     return 0
