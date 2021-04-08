@@ -87,7 +87,7 @@ class FixSentry(BaseplateBaseFix):
                     if positional_argument_count > 1:
                         should_warn = True
                 else:  # captureException("foo")
-                    assert isinstance(arg, Leaf)
+                    pass
 
             capture["method_name"].replace(
                 Name(METHOD_RENAMES[method_name], prefix=capture["method_name"].prefix)
