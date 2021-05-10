@@ -162,7 +162,10 @@ def check_for_old_docker_builder(root: Path):
         with dronefile.open(encoding="utf8", errors="replace") as f:
             for lineno, line in enumerate(f.readlines()):
                 if "drone-plugin-docker" in line:
-                    logging.warning("Line %d of .drone.yml: drone-plugin-docker does not work with Artifactory. Search 'How to Upgrade Your Baseplate Service To Use Artifactory' on Confluence for upgrade instructions.", lineno)
+                    logging.warning(
+                        "Line %d of .drone.yml: drone-plugin-docker does not work with Artifactory. Search 'How to Upgrade Your Baseplate Service To Use Artifactory' on Confluence for upgrade instructions.",
+                        lineno,
+                    )
     except IOError:
         return
 
