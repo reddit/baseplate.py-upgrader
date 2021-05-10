@@ -243,6 +243,8 @@ def update(
         "Update OneVM manifests for compatibility. See https://git.io/JYAPJ"
     )
 
+    logging.warning("Add SOURCE_VERSION to Dockerfile. See https://git.io/J3hge")
+
     check_for_old_docker_builder(root)
 
     return 0
