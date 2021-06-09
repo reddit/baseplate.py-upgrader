@@ -4,7 +4,6 @@ from lib2to3.fixer_util import Name
 from lib2to3.fixer_util import String
 from lib2to3.fixer_util import syms
 from lib2to3.fixer_util import token
-from lib2to3.pytree import Leaf
 
 from .. import BaseplateBaseFix
 from .. import Capture

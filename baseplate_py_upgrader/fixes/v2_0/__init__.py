@@ -156,7 +156,7 @@ def update_config_file(path: Path) -> None:
         fp.write("".join(lines))
 
 
-def check_for_old_docker_builder(root: Path):
+def check_for_old_docker_builder(root: Path) -> None:
     dronefile = root / ".drone.yml"
     try:
         with dronefile.open(encoding="utf8", errors="replace") as f:
