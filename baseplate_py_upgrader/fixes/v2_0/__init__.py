@@ -194,6 +194,7 @@ def update(
     package_repo.ensure(
         requirements_file, "python-json-logger>=2.0,<3.0", required=True
     )
+    package_repo.ensure(requirements_file, "reddit-v2-events>=1.21.4")
 
     if "baseplate.lib.experiments" in RENAMES.names_seen:
         package_repo.ensure(
