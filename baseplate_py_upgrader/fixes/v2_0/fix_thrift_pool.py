@@ -27,8 +27,7 @@ class FixThriftPool(BaseplateBaseFix):
 
     def transform(self, node: LN, capture: Capture) -> None:
         for argument in capture["arguments"]:
-            if argument.type == syms.argument:
-                assert argument.children[1].value == "="
+            if argument.type == syms.argument and argument.children[1].value == "=":
                 keyword_name = argument.children[0]
 
                 if keyword_name.value == "max_retries":
