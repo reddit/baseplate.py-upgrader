@@ -13,29 +13,33 @@ IMAGE_RE = re.compile(
 )
 
 
-def upgrade_docker_image_references_in_file(target_series: str, filepath: Path) -> None:
+def replace_docker_image_references(target_series: str, content: str) -> str:
     major, minor = target_series.split(".")
     if major == "0":
         image_series = f"{major}.{minor}"
     else:
         image_series = f"{major}"
 
-    force_distro = None
-    force_dev = False
-    force_repo = None
-    if major == "2":
-        force_distro = "buster"
-        force_dev = True
-        force_repo = ""
-
     def replace_docker_image_reference(m: Match[str]) -> str:
-        distro = force_distro or m["distro"]
-        repo = force_repo if force_repo is not None else m["repo"]
-        dev = "-dev" if force_dev else m["dev"]
+        if major == "2":
+            distro = "buster"
+            repo = ""
+
+            if m["version"] == "2":
+                dev = m["dev"]
+            else:
+                dev = "-dev"
+        else:
+            distro = m["distro"]
+
         return f"/baseplate-py:{image_series}-py{m['python']}-{distro}{repo or ''}{dev or ''}"
 
+    return IMAGE_RE.sub(replace_docker_image_reference, content, re.MULTILINE)
+
+
+def upgrade_docker_image_references_in_file(target_series: str, filepath: Path) -> None:
     file_content = filepath.read_text()
-    changed = IMAGE_RE.sub(replace_docker_image_reference, file_content, re.MULTILINE)
+    changed = replace_docker_image_references(target_series, file_content)
 
     if file_content == changed:
         return

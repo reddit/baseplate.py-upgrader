@@ -120,7 +120,7 @@ def update_config_file(path: Path) -> None:
         lines = []
 
         for lineno, line in enumerate(fp, start=1):
-            m = configparser.RawConfigParser.SECTCRE.match(line)  # type: ignore
+            m = configparser.RawConfigParser.SECTCRE.match(line)
             if m:
                 skipping_section = False
                 current_section = m["header"]
@@ -137,7 +137,7 @@ def update_config_file(path: Path) -> None:
                 if skipping_section:
                     continue
 
-                m = configparser.RawConfigParser.OPTCRE.match(line)  # type: ignore
+                m = configparser.RawConfigParser.OPTCRE.match(line)
                 if m:
                     if m["option"] in deletions_by_section[current_section]:
                         continue

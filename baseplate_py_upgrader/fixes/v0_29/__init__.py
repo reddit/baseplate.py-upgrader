@@ -20,7 +20,7 @@ def add_max_concurrency(root: Path) -> None:
 
         current_server = None
         for i, line in enumerate(config_lines):
-            m = configparser.RawConfigParser.SECTCRE.match(line)  # type: ignore
+            m = configparser.RawConfigParser.SECTCRE.match(line)
             if m:
                 name = m.group("header")
                 if name.startswith("server:"):
@@ -30,7 +30,7 @@ def add_max_concurrency(root: Path) -> None:
                 continue
 
             if current_server:
-                m = configparser.RawConfigParser.OPTCRE.match(line)  # type: ignore
+                m = configparser.RawConfigParser.OPTCRE.match(line)
                 if m:
                     name = m.group("option")
                     if name == "max_concurrency":
