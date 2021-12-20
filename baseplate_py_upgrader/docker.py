@@ -31,6 +31,8 @@ def replace_docker_image_references(target_series: str, content: str) -> str:
                 dev = "-dev"
         else:
             distro = m["distro"]
+            repo = m["repo"]
+            dev = m["dev"]
 
         return f"/baseplate-py:{image_series}-py{m['python']}-{distro}{repo or ''}{dev or ''}"
 
