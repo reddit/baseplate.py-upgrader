@@ -26,7 +26,7 @@ REQUIREMENT_RE = re.compile(
     r"^\s*(?P<distribution>[A-Za-z0-9_.-]+)\s*(?P<requirements>((>=|<=|==|<)[0-9ab.]+,?)+)$"
 )
 SPECIFIER_RE = re.compile("^(?P<op>>=|<=|==|<)(?P<version>[0-9ab.]+)$")
-
+PRE_RELEASE_VERSION = re.compile(r"(.*?)(a|b|rc)\d+$")
 
 OPERATORS = {">=": operator.ge, "<=": operator.le, "==": operator.eq, "<": operator.lt}
 
@@ -88,7 +88,8 @@ class PackageRepo:
                     for version, files in package_info["releases"].items():
                         if all(file["yanked"] for file in files):
                             continue
-
+                        if PRE_RELEASE_VERSION.match(version):
+                            continue
                         versions.append(version)
             except urllib.error.HTTPError as exc:
                 if exc.code != 404:
