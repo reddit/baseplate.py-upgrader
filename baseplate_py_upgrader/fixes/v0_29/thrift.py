@@ -173,7 +173,7 @@ def find_invalid_thrift_idl(root: Path) -> bool:
                 if token.value == "float":
                     logging.error(
                         "Line %d of %s: The 'float' type is not supported in Apache Thrift. "
-                        "See https://git.io/Je8wF",
+                        "See https://github.com/reddit/baseplate.py-upgrader/wiki/v0.29#float-in-thrift-idl",
                         token.line,
                         path,
                     )
@@ -181,7 +181,7 @@ def find_invalid_thrift_idl(root: Path) -> bool:
                 elif token.value in RESERVED_KEYWORDS:
                     logging.error(
                         "Line %d of %s: Reserved keyword %r cannot be used for identifiers. "
-                        "See https://git.io/Je8wb",
+                        "See https://github.com/reddit/baseplate.py-upgrader/wiki/v0.29#reserved-keywords-in-thrift-idl",
                         token.line,
                         path,
                         token.value,

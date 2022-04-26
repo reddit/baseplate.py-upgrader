@@ -26,4 +26,4 @@ class FixObserverWireup(BaseplateBaseFix):
 
     def transform(self, node: LN, capture: Capture) -> None:
         if capture["name"].value in REMOVED_FUNCTIONS:
-            self.warn(node, "Use configure_observers(). See: https://git.io/Jt8S7")
+            self.warn(node, "Use configure_observers(). See: https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#use-configure_observers-for-all-observers")

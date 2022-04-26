@@ -104,7 +104,7 @@ def update_config_file(path: Path) -> None:
 
             if parser[section].get("metrics.tagging", "").lower() == "true":
                 logging.warning(
-                    "Tagged metrics paths have changed. Update dashboards. See https://git.io/JYAPI"
+                    "Tagged metrics paths have changed. Update dashboards. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#tagged-metrics"
                 )
 
             for opt in parser[section]:
@@ -223,7 +223,7 @@ def update(
     # py3.8 that didn't have "artifactory" in their tags.
     if python_version == (3, 7):
         logging.warning(
-            "Check packages install from PyPI correctly. See https://git.io/JtCvp"
+            "Check packages install from PyPI correctly. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#packages-fetched-from-pypi"
         )
 
     if "raven" in requirements_file:
@@ -237,14 +237,14 @@ def update(
         )
 
     logging.warning(
-        "Update runtime metrics queries to use tags. See https://git.io/JtCvj"
+        "Update runtime metrics queries to use tags. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#tagged-runtime-metrics"
     )
 
     logging.warning(
-        "Update OneVM manifests for compatibility. See https://git.io/JYAPJ"
+        "Update OneVM manifests for compatibility. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#onevm-changes"
     )
 
-    logging.warning("Add SOURCE_VERSION to Dockerfile. See https://git.io/J3hge")
+    logging.warning("Add SOURCE_VERSION to Dockerfile. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#add-source_version-to-docker-image")
 
     check_for_old_docker_builder(root)
 

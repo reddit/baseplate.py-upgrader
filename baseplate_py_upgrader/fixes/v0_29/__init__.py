@@ -89,7 +89,7 @@ def update(
     fix_thrift_compiler_references(root)
 
     logging.warning(
-        "Verify that Thrift method calls specify all params. See https://git.io/Je4HV"
+        "Verify that Thrift method calls specify all params. See https://github.com/reddit/baseplate.py-upgrader/wiki/v0.29#thrift-rpc-parameters"
     )
 
     return result

@@ -10,5 +10,5 @@ class FixMakeContextObject(BaseplateBaseFix):
         self.warn(
             node,
             "Ensure the custom context object you pass to make_server_span derives from "
-            "RequestContext. See: https://git.io/fj5Xn",
+            "RequestContext. See: https://github.com/reddit/baseplate.py-upgrader/wiki/v1.0#make_server_span",
         )

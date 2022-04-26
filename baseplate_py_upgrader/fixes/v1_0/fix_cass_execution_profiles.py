@@ -10,5 +10,5 @@ class FixCassExecutionProfiles(BaseplateBaseFix):
         self.warn(
             node,
             "Consider using execution profiles to control Cassandra settings. "
-            "See: https://git.io/JvSqs",
+            "See: https://github.com/reddit/baseplate.py-upgrader/wiki/v1.0#cassandra-execution-profiles",
         )
