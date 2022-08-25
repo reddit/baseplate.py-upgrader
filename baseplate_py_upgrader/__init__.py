@@ -99,11 +99,15 @@ class LogFormatter(logging.Formatter):
         return f" {self.prefixes[record.levelno]} {colorize(super().format(record), self.text_colors[record.levelno])}"
 
 
-def is_git_repo_and_clean(root: Path) -> bool:
+def is_git_repo_and_clean(root: Path, allow_unclean: bool) -> bool:
     result = subprocess.run(
         ["git", "status", "-s", "--untracked-files=no"], cwd=root, capture_output=True
     )
-    return result.returncode == 0 and not result.stdout
+    return_success = result.returncode == 0
+    if allow_unclean:
+        return return_success
+
+    return return_success and not result.stdout
 
 
 def get_target_series(current_version: str) -> str:
@@ -122,9 +126,20 @@ def _main() -> int:
         help="path to the source code of a service you want to upgrade",
         type=Path,
     )
+    parser.add_argument(
+        "--allow_unclean",
+        help="allow the upgrader to continue even if the repo is unclean",
+        action=argparse.BooleanOptionalAction,
+        default=False
+    )
+    parser.add_argument(
+        "--assume_current_version",
+        help="assume the project is at a specific version rather than what's in the requirements.txt",
+        type=str
+    )
     args = parser.parse_args()
 
-    if not is_git_repo_and_clean(args.source_dir):
+    if not is_git_repo_and_clean(args.source_dir, args.allow_unclean):
         print(
             f"{args.source_dir} is not a Git repository or has uncommitted changes!",
             color=Color.RED.BOLD,
@@ -137,7 +152,10 @@ def _main() -> int:
     requirements_file = RequirementsFile.from_root(args.source_dir)
 
     try:
-        current_version = requirements_file["baseplate"]
+        if args.assume_current_version:
+            current_version = args.assume_current_version
+        else:
+            current_version = requirements_file["baseplate"]
     except KeyError:
         print("That project doesn't seem to use Baseplate.py!", color=Color.RED.BOLD)
         return 1
@@ -155,7 +173,11 @@ def _main() -> int:
         print(f"Python version: {'.'.join(str(v) for v in python_version)}")
     else:
         print("Failed to detect Python version.", color=Color.YELLOW.BOLD)
-    print(f"Current version: v{current_version}")
+
+    if args.assume_current_version:
+        print(f"Current version: v{args.assume_current_version} (assumed)")
+    else:
+        print(f"Current version: v{current_version}")
     print(f"Target version: v{target_version} ({target_series} series)")
     print()
 
