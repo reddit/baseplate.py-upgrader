@@ -1,4 +1,5 @@
 import sys
+
 from . import main
 
 
@@ -9,4 +10,3 @@ try:
 except Exception as e:
     print('Error: %s' % e, file=sys.stderr)
 sys.exit(rc)
-
