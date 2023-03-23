@@ -11,3 +11,5 @@ will be editing source code):
 and then run it on a baseplate.py project you want to upgrade:
 
     baseplate.py-upgrader ~/src/fooservice
+
+dummy change
