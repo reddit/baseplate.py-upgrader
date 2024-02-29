@@ -3,11 +3,13 @@
 This tool will help you make the changes necessary to upgrade your Baseplate.py
 service from one version to another.
 
-Install the upgrader on your development machine (outside any VMs, since this
-will be editing source code):
+The easiest way to use this tool is through `pipx` (`brew install pipx` on
+macOS):
 
-    pip3.7 install git+https://github.com/reddit/baseplate.py-upgrader
+    pipx run --spec git+https://github.com/reddit/baseplate.py-upgrader baseplate.py-upgrader ~/src/fooservice
 
-and then run it on a baseplate.py project you want to upgrade:
+You can also create a virtualenv and install it manually:
 
-    baseplate.py-upgrader ~/src/fooservice
+    python3.12 -m venv venv
+    venv/bin/pip install git+https://github.com/reddit/baseplate.py-upgrader
+    venv/bin/baseplate.py-upgrader ~/src/fooservice
