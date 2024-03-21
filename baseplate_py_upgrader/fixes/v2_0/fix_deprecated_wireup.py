@@ -44,5 +44,6 @@ class FixDeprecatedWireup(BaseplateBaseFix):
 
         self.warn(
             node,
-            "Pass config to the Baseplate constructor. " "See: https://github.com/reddit/baseplate.py-upgrader/wiki/v1.3#pass-your-applications-config-to-the-baseplate-constructor",
+            "Pass config to the Baseplate constructor. "
+            "See: https://github.com/reddit/baseplate.py-upgrader/wiki/v1.3#pass-your-applications-config-to-the-baseplate-constructor",
         )

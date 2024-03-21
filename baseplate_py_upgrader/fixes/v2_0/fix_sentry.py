@@ -115,4 +115,7 @@ class FixSentry(BaseplateBaseFix):
                 capture["arglist"].replace(ArgList(args))
                 return
 
-        self.warn(node, "Update uses of Sentry APIs. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#migrating-from-raven-to-sentry-sdk")
+        self.warn(
+            node,
+            "Update uses of Sentry APIs. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#migrating-from-raven-to-sentry-sdk",
+        )
