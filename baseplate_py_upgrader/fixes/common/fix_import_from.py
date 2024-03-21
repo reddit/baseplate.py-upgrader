@@ -68,9 +68,9 @@ class BaseFixImportFrom(BaseplateBaseFix):
             else:
                 raise Exception(f"unexpected node {repr(n)}")
 
-        imports_by_package: DefaultDict[
-            str, List[Tuple[str, Optional[str]]]
-        ] = collections.defaultdict(list)
+        imports_by_package: DefaultDict[str, List[Tuple[str, Optional[str]]]] = (
+            collections.defaultdict(list)
+        )
         for name, nick in imports:
             full_name = f"{module_name}.{name}"
             try:

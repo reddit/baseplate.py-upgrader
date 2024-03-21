@@ -244,7 +244,9 @@ def update(
         "Update OneVM manifests for compatibility. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#onevm-changes"
     )
 
-    logging.warning("Add SOURCE_VERSION to Dockerfile. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#add-source_version-to-docker-image")
+    logging.warning(
+        "Add SOURCE_VERSION to Dockerfile. See https://github.com/reddit/baseplate.py-upgrader/wiki/v2.0#add-source_version-to-docker-image"
+    )
 
     check_for_old_docker_builder(root)
 
